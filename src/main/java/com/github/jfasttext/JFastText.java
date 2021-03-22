@@ -188,7 +188,7 @@ public class JFastText {
     }
 
     public List<String> getLabels() {
-        return stringVec2Strings(fta.getWords());
+        return stringVec2Strings(fta.getLabels());
     }
 
     public double getLr() {
