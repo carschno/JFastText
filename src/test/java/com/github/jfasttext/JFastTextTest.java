@@ -10,10 +10,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JFastTextTest {
@@ -180,5 +183,22 @@ public class JFastTextTest {
         assertNotNull(String.format("Failed to locate model '%s'", modelFile), modelUrl);
         JFastText jft = new JFastText(modelUrl);
         System.out.printf("\tnumber of words = %d\n", jft.getNWords());
+    }
+
+    @Test
+    public void test11GetLabels() throws Exception {
+        String modelFile = "src/test/resources/models/supervised.model.bin";
+        URL modelUrl = new File(modelFile).toURI().toURL();
+        assertNotNull(String.format("Failed to locate model '%s'", modelFile), modelUrl);
+        JFastText jft = new JFastText(modelUrl);
+
+        assertEquals(2, jft.getNLabels());
+        System.out.printf("\tnumber of labels = %d\n", jft.getNLabels());
+        final String prefix = jft.getLabelPrefix();
+        assertEquals("__label__", prefix);
+
+        final Set<String> labels = jft.getLabels().stream().collect(Collectors.toSet());
+        assertTrue("Expected label not found:" + prefix + "soccer", labels.contains(prefix + "soccer"));
+        assertTrue("Expected label not found:" + prefix + "football", labels.contains(prefix + "football"));
     }
 }
